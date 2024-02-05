@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,15 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.Product;
 import com.example.demo.repositories.ProductRepository;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class ProductController {
 
     @Autowired
@@ -37,8 +34,10 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/removeProduct/{id}")
-    public void deleteProduct(@PathVariable UUID productId) {
+    @SuppressWarnings("null")
+    @DeleteMapping("/removeProduct/{productId}")
+    public void deleteProduct(@PathVariable(value = "productId", required = false) UUID productId) {
+        System.out.println(productId);
         if (productId != null) {
             try {
                 Product p = productRepository.findById(productId).orElseThrow(() -> new OptimisticLockingFailureException("The product does not exist"));
@@ -52,9 +51,9 @@ public class ProductController {
         }
     }
     
-    /*@GetMapping("/products")
-    public SomeData getMethodName(@RequestParam String param) {
-        return new SomeData();
-    }*/
+    @GetMapping("/products")
+    public List<Product> geAllProducts() {
+        return productRepository.findAll();
+    }
     
 }

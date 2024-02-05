@@ -21,4 +21,5 @@ public class Client {
     public String name;
     public Date birthDate;
     public String username;
+    public String email;
 }
