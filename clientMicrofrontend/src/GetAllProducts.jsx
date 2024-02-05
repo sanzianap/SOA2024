@@ -1,6 +1,6 @@
 import { createSignal, createEffect } from "solid-js";
 
-const Daate = () => {
+const GetAllProducts = () => {
   // Create a signal to hold the fetched data
   const [data, setData] = createSignal(null);
 
@@ -10,11 +10,7 @@ const Daate = () => {
     const apiUrl = "http://localhost:18080/products";
 
     // Fetch data using the GET method
-    fetch(apiUrl, {
-        method : "GET",
-        mode: 'cors',
-        headers: {}
-    })
+    fetch(apiUrl)
       .then((response) => response.json())
       .then((responseData) => {
         // Update the data signal with the fetched data
@@ -26,17 +22,25 @@ const Daate = () => {
   });
 
   return (
-    <div>
+    <div class="relative overflow-x-auto">
+        <span>PRODUCT TABLE</span>
       {/* Display the fetched data */}
       {data() && (
-        <ul>
-          {data().map((item) => (
-            <li key={item.price}>{item.stock}</li>
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><tbody>
+            <tr class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+            {data().map((item) => (
+            <tr id={item.id}> 
+                <td>{item.price}</td>
+                <td>{item.stock}</td>
+            </tr>
           ))}
-        </ul>
+        </tbody></table>
       )}
     </div>
   );
 };
 
-export default Daate;
+export default GetAllProducts;
