@@ -1,16 +1,16 @@
 import { render } from "solid-js/web";
 
-import Counter from "clientMicrofrontend/Counter"
+//import Counter from "clientMicrofrontend/Counter"
+import Client from "clientMicrofrontend/Client"
+import Product from "productMicrofrontend/Product"
 
 import "./index.scss";
 
 const App = () => (
   <div class="mt-10 text-3xl mx-auto max-w-6xl">
-    <div>Name: host</div>
-    <div>Framework: solid-js</div>
-    <div>Language: JavaScript</div>
-    <div>CSS: Tailwind</div>
-    <Counter />
+    <div class="bg-blue-100"><Client /></div>
+    <br />
+    <div class="bg-green-100"><Product /></div>
   </div>
 );
 render(App, document.getElementById("app"));

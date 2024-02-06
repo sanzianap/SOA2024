@@ -45,7 +45,8 @@ module.exports = (_, argv) => ({
       name: "host",
       filename: "remoteEntry.js",
       remotes: {
-        clientMicrofrontend: "clientMicrofrontend@http://localhost:3000/remoteEntry.js"
+        clientMicrofrontend: "clientMicrofrontend@http://localhost:3000/remoteEntry.js",
+        productMicrofrontend: "productMicrofrontend@http://localhost:3002/remoteEntry.js"
       },
       exposes: {},
       shared: {
