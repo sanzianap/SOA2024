@@ -20,14 +20,16 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors(withDefaults())
+                .httpBasic(withDefaults())
                 .authorizeHttpRequests(auth -> {
-                    //auth.requestMatchers("/").permitAll();
-                    //auth.requestMatchers("/favicon.ico").permitAll();
-                    //auth.anyRequest().authenticated();
-                    auth.anyRequest().permitAll();
+                    auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/favicon.ico").permitAll();
+                    auth.anyRequest().authenticated();
+                    //auth.anyRequest().permitAll();
                 })
+                .anonymous(anonymous -> anonymous.disable())
                 //.oauth2Login(withDefaults())
-                //.formLogin(withDefaults())
+                .formLogin(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .build();
     }
@@ -40,7 +42,7 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name())
-                .allowedOrigins("http://localhost:3000", "http://localhost:3000/remoteEntry.js")
+                .allowedOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:8080")
                 //.allowedOrigins()
                 .allowedHeaders(HttpHeaders.CONTENT_TYPE, HttpHeaders.AUTHORIZATION);
             }
@@ -66,7 +68,8 @@ public class SecurityConfig {
 
     /*@Bean
 	public UserDetailsService userDetailsService() {
-		UserDetails userDetails = User.withDefaultPasswordEncoder()
+		@SuppressWarnings("deprecation")
+        UserDetails userDetails = User.withDefaultPasswordEncoder()
 			.username("user")
 			.password("password")
 			.roles("USER")

@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +29,20 @@ public class OrderController {
 
     @PostMapping("/addOrder")
     public void addOrder(@RequestBody Order order) {
+        List<Order> existingOrders = orderRepository.findAll();
+        for(Order o : existingOrders) {
+            if (o.getClient().getId().toString().equals(order.getClient().getId().toString()) && 
+                    o.getProduct().getId().toString().equals(order.getProduct().getId().toString())) {
+                int newQuantity = order.getQuantity() + o.getQuantity();
+                float newPrice = order.getPrice() + o.getPrice();
+                order.setQuantity(newQuantity);
+                order.setPrice(newPrice);
+                order.setId(o.getId());
+            }
+        }
+        Date date = new Date();
         if (order != null) {
+            order.setDate(new Timestamp(date.getTime()));
             orderRepository.save(order);
         }
     }
@@ -51,7 +66,8 @@ public class OrderController {
     
     @GetMapping("/orders")
     public List<Order> geAllOrders() {
-        return orderRepository.findAll();
+        List<Order> orders = orderRepository.findAll();
+        return orders;
     }
 
 }
