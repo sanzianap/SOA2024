@@ -7,23 +7,34 @@ const Product = () => {
   const [stock, setStock] = createSignal(0);
   const [products, setProducts] = createSignal([]);
 
+  const usernameSecurity = "user";
+  const passwordSecurity = "password";
+
+  // Encode username and password in Base64 format
+  const basicAuthHeader = btoa(`${usernameSecurity}:${passwordSecurity}`);
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Basic ${basicAuthHeader}`);
+  myHeaders.append("Content-type", "application/json; charset=UTF-8");
+
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      // Make a POST request to add a new product
-      const response = await fetch("http://localhost:18080/addProduct", {
+      const requestOptions = {
         method: "POST",
         body: JSON.stringify({
-            name: name(),
-            price: price(), 
-            stock: stock()
-          }),
-        headers: {
-            "Content-type": "application/json; charset=UTF-8"
-          }
-      });
+          name: name(),
+          price: price(), 
+          stock: stock()
+        }),
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      // Make a POST request to add a new product
+      const response = await fetch("http://localhost:18080/addProduct", requestOptions);
 
       if (response.ok) {
         // If the product is added successfully, fetch the updated list of products
@@ -43,10 +54,14 @@ const Product = () => {
   // Function to handle product deletion
   const handleDelete = async (productId) => {
     try {
-      // Make a DELETE request to remove the product
-      const response = await fetch(`http://localhost:18080/removeProduct/${productId}`, {
+      const requestOptions = {
         method: "DELETE",
-      });
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      // Make a DELETE request to remove the product
+      const response = await fetch(`http://localhost:18080/removeProduct/${productId}`, requestOptions);
 
       if (response.ok) {
         // If the product is deleted successfully, fetch the updated list of products
@@ -62,8 +77,14 @@ const Product = () => {
   // Function to fetch the updated list of products
   const fetchProducts = async () => {
     try {
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
       // Make a GET request to fetch the list of products
-      const response = await fetch("http://localhost:18080/products");
+      const response = await fetch("http://localhost:18080/products", requestOptions);
 
       if (response.ok) {
         // Parse the response and update the products signal

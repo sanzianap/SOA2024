@@ -45,7 +45,9 @@ module.exports = (_, argv) => ({
       name: "orderMicrofrontend",
       filename: "remoteEntry.js",
       remotes: {},
-      exposes: {},
+      exposes: {
+        "./Order": "./src/Order.jsx"
+      },
       shared: {
         ...deps,
         "solid-js": {

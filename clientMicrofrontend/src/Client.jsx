@@ -26,24 +26,35 @@ const Client = () => {
     setBirthDate(formatDate(selectedDateObject));
   };
 
+  const usernameSecurity = "user";
+  const passwordSecurity = "password";
+
+  // Encode username and password in Base64 format
+  const basicAuthHeader = btoa(`${usernameSecurity}:${passwordSecurity}`);
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Basic ${basicAuthHeader}`);
+  myHeaders.append("Content-type", "application/json; charset=UTF-8");
+
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      // Make a POST request to add a new client
-      const response = await fetch("http://localhost:18080/addClient", {
+      const requestOptions = {
         method: "POST",
         body: JSON.stringify({
-            name: name(),
-            birthDate: birthDate(), 
-            username: username(),
-            email: email()
-          }),
-        headers: {
-            "Content-type": "application/json; charset=UTF-8"
-          }
-      });
+          name: name(),
+          birthDate: birthDate(), 
+          username: username(),
+          email: email()
+        }),
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      // Make a POST request to add a new client
+      const response = await fetch("http://localhost:18080/addClient", requestOptions);
 
       if (response.ok) {
         // If the client is added successfully, fetch the updated list of clients
@@ -63,11 +74,14 @@ const Client = () => {
 
   // Function to handle client deletion
   const handleDelete = async (clientId) => {
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow"
+    };
     try {
       // Make a DELETE request to remove the client
-      const response = await fetch(`http://localhost:18080/removeClient/${clientId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(`http://localhost:18080/removeClient/${clientId}`, requestOptions);
 
       if (response.ok) {
         // If the client is deleted successfully, fetch the updated list of clients
@@ -83,8 +97,14 @@ const Client = () => {
   // Function to fetch the updated list of clients
   const fetchClients = async () => {
     try {
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
       // Make a GET request to fetch the list of clients
-      const response = await fetch("http://localhost:18080/clients");
+      const response = await fetch("http://localhost:18080/clients", requestOptions);
 
       if (response.ok) {
         // Parse the response and update the clients signal
